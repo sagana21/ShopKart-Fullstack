@@ -2,7 +2,7 @@
 
 ## Run it
 **Backend**: `cd backend` -> `npm install` -> copy `.env.example` to `.env` and fill in `MONGO_URI`, `JWT_SECRET`, `CLIENT_URL`, **`RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`** (Razorpay Dashboard in **Test Mode** -> API Keys) -> `npm run dev`
-**Frontend**: `cd frontend` -> `npm install` -> `npm run dev` (http://localhost:5173)
+**Frontend**: `cd frontend` -> `npm install` -> `npm run dev` (http://localhost:5173) or the next free port Vite prints, e.g. 5174; set `CLIENT_URL` in `backend/.env` to match)
 
 Test card for Razorpay Test Mode: any valid test card from Razorpay's docs (e.g. 4111 1111 1111 1111, any future expiry, any CVV, OTP/success on the mock bank page). Never use Live keys.
 
@@ -52,3 +52,26 @@ Test card for Razorpay Test Mode: any valid test card from Razorpay's docs (e.g.
 8. Add `"totalAmount": 1` to the body -> ignored, real amount used
 9. No cookie -> 401
 10. GET /orders/:id of another user -> 404
+
+
+## How to test
+
+1. Backend: `cd backend`, `npm install`, copy `.env.example` to `.env`, fill in your MongoDB URI, a JWT secret and Razorpay **Test Mode** keys, then `npm run dev`.
+2. Frontend: `cd frontend`, `npm install`, `npm run dev`.
+3. Make sure `CLIENT_URL` in `backend/.env` matches the port the frontend prints (5173 by default).
+4. Open the frontend, register a new account, then log in.
+5. If the product list is empty, add a product with Postman or Thunder Client:
+   `POST http://localhost:5000/products`
+```json
+   {
+     "name": "Mechanical Keyboard",
+     "description": "RGB mechanical keyboard",
+     "price": 2999,
+     "category": "Electronics",
+     "image": "https://via.placeholder.com/300",
+     "stock": 10
+   }
+```
+6. Add the product to the cart, go to Checkout, fill in the shipping details and pay with Razorpay test card `4111 1111 1111 1111` (any future expiry, any CVV).
+7. You should land on the success page, the cart should show 0, and the order should appear under **My Orders**.
+
